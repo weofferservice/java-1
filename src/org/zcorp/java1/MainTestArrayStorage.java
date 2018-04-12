@@ -1,20 +1,19 @@
 package org.zcorp.java1;
 
 import org.zcorp.java1.model.Resume;
-import org.zcorp.java1.storage.SortedArrayStorage;
-import org.zcorp.java1.storage.Storage;
+import org.zcorp.java1.storage.ArrayStorage;
 
 /**
- * Test org.zcorp.java1.storage.SortedArrayStorage
+ * Test org.zcorp.java1.storage.ArrayStorage
  */
 public class MainTestArrayStorage {
-    static final Storage ARRAY_STORAGE = new SortedArrayStorage();
+    static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume();
-        r1.setUuid("uuid2");
+        r1.setUuid("uuid1");
         Resume r2 = new Resume();
-        r2.setUuid("uuid1");
+        r2.setUuid("uuid2");
         Resume r3 = new Resume();
         r3.setUuid("uuid3");
 
@@ -28,10 +27,6 @@ public class MainTestArrayStorage {
         System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));
 
         printAll();
-
-        ARRAY_STORAGE.update(r2);
-        printAll();
-
         ARRAY_STORAGE.delete(r1.getUuid());
         printAll();
         ARRAY_STORAGE.clear();
