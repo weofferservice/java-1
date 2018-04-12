@@ -1,7 +1,7 @@
 package org.zcorp.java1;
 
 import org.zcorp.java1.model.Resume;
-import org.zcorp.java1.storage.ArrayStorage;
+import org.zcorp.java1.storage.SortedArrayStorage;
 import org.zcorp.java1.storage.Storage;
 
 import java.io.BufferedReader;
@@ -9,16 +9,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Test for org.zcorp.java1.storage.ArrayStorage
+ * Test for org.zcorp.java1.storage.SortedArrayStorage
  */
 public class MainArray {
-    private final static Storage ARRAY_STORAGE = new ArrayStorage();
+    private final static Storage ARRAY_STORAGE = new SortedArrayStorage();
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Resume r;
         while (true) {
-            System.out.print("Введите одну из команд - (list | save uuid | delete uuid | get uuid | update uuid | clear | exit): ");
+            System.out.print("Введите одну из команд - (list | save uuid | delete uuid | get uuid | update uuid | clear | size | exit): ");
             String[] params = reader.readLine().trim().toLowerCase().split(" ");
             if (params.length < 1 || params.length > 2) {
                 System.out.println("Неверная команда.");
