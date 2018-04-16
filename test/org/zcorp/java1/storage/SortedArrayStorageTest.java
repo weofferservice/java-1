@@ -2,11 +2,11 @@ package org.zcorp.java1.storage;
 
 import org.junit.BeforeClass;
 
-public class ArrayStorageTest extends AbstractArrayStorageTest {
+public class SortedArrayStorageTest extends AbstractArrayStorageTest {
 
     @BeforeClass
     public static void setUpClass() {
-        storage = new ArrayStorage();
+        storage = new SortedArrayStorage();
     }
 
 }
