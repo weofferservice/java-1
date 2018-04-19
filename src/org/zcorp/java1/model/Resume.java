@@ -47,4 +47,22 @@ public class Resume implements Comparable<Resume> {
         return uuid.compareTo(o.uuid);
     }
 
+    public static class Entry {
+        private Integer index;
+        private Resume resume;
+
+        public Entry(Integer index, Resume resume) {
+            this.index = index;
+            this.resume = resume;
+        }
+
+        public Integer getIndex() {
+            return index;
+        }
+
+        public Resume getResume() {
+            return resume;
+        }
+    }
+
 }
