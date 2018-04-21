@@ -2,57 +2,59 @@ package org.zcorp.java1.storage;
 
 import org.zcorp.java1.exception.ExistStorageException;
 import org.zcorp.java1.exception.NotExistStorageException;
-import org.zcorp.java1.exception.StorageException;
 import org.zcorp.java1.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
+    protected abstract Object getSearchKey(String uuid);
+
+    protected abstract void doUpdate(Resume r, Object searchKey);
+
+    protected abstract boolean isExist(Object searchKey);
+
+    protected abstract void doSave(Resume r, Object searchKey);
+
+    protected abstract Resume doGet(Object searchKey);
+
+    protected abstract void doDelete(Object searchKey);
+
     @Override
-    public void update(Resume newResume) {
-        Resume.Entry re = getResumeEntry(newResume.getUuid());
-        if (re.getResume() == null) {
-            throw new NotExistStorageException(newResume.getUuid());
-        }
-        setElement(newResume, re.getIndex());
+    public void update(Resume r) {
+        Object searchKey = getExistedSearchKey(r.getUuid());
+        doUpdate(r, searchKey);
     }
 
-    protected abstract void setElement(Resume r, Integer index);
-
     @Override
-    public void save(Resume newResume) {
-        Resume.Entry re = getResumeEntry(newResume.getUuid());
-        if (re.getResume() != null) {
-            throw new ExistStorageException(newResume.getUuid());
-        }
-        if (isStorageFull()) {
-            throw new StorageException("Storage overflow", newResume.getUuid());
-        }
-        insertElement(newResume, re.getIndex());
+    public void save(Resume r) {
+        Object searchKey = getNotExistedSearchKey(r.getUuid());
+        doSave(r, searchKey);
     }
-
-    protected abstract boolean isStorageFull();
-    protected abstract void insertElement(Resume r, Integer index);
 
     @Override
     public void delete(String uuid) {
-        Resume.Entry re = getResumeEntry(uuid);
-        if (re.getResume() == null) {
-            throw new NotExistStorageException(uuid);
-        }
-        deleteElement(re);
+        Object searchKey = getExistedSearchKey(uuid);
+        doDelete(searchKey);
     }
-
-    protected abstract void deleteElement(Resume.Entry re);
 
     @Override
     public Resume get(String uuid) {
-        Resume.Entry re = getResumeEntry(uuid);
-        if (re.getResume() == null) {
-            throw new NotExistStorageException(uuid);
-        }
-        return re.getResume();
+        Object searchKey = getExistedSearchKey(uuid);
+        return doGet(searchKey);
     }
 
-    protected abstract Resume.Entry getResumeEntry(String uuid);
+    private Object getExistedSearchKey(String uuid) {
+        Object searchKey = getSearchKey(uuid);
+        if (!isExist(searchKey)) {
+            throw new NotExistStorageException(uuid);
+        }
+        return searchKey;
+    }
 
+    private Object getNotExistedSearchKey(String uuid) {
+        Object searchKey = getSearchKey(uuid);
+        if (isExist(searchKey)) {
+            throw new ExistStorageException(uuid);
+        }
+        return searchKey;
+    }
 }

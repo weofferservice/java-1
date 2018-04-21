@@ -6,49 +6,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage {
-    private final List<Resume> storage = new ArrayList<>();
+    private List<Resume> list = new ArrayList<>();
 
     @Override
-    protected void setElement(Resume r, Integer index) {
-        storage.set(index, r);
-    }
-
-    @Override
-    protected boolean isStorageFull() {
-        return false;
-    }
-
-    @Override
-    protected void insertElement(Resume r, Integer index) {
-        storage.add(r);
-    }
-
-    @Override
-    protected void deleteElement(Resume.Entry re) {
-        storage.remove(re.getIndex().intValue());
-    }
-
-    @Override
-    protected Resume.Entry getResumeEntry(String uuid) {
-        int index = storage.indexOf(new Resume(uuid));
-        if (index == -1) {
-            return new Resume.Entry(null, null);
+    protected Integer getSearchKey(String uuid) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getUuid().equals(uuid)) {
+                return i;
+            }
         }
-        return new Resume.Entry(index, storage.get(index));
+        return null;
+    }
+
+    @Override
+    protected boolean isExist(Object searchKey) {
+        return searchKey != null;
+    }
+
+    @Override
+    protected void doUpdate(Resume r, Object searchKey) {
+        list.set((Integer) searchKey, r);
+    }
+
+    @Override
+    protected void doSave(Resume r, Object searchKey) {
+        list.add(r);
+    }
+
+    @Override
+    protected Resume doGet(Object searchKey) {
+        return list.get((Integer) searchKey);
+    }
+
+    @Override
+    protected void doDelete(Object searchKey) {
+        list.remove(((Integer) searchKey).intValue());
     }
 
     @Override
     public void clear() {
-        storage.clear();
+        list.clear();
     }
 
     @Override
     public Resume[] getAll() {
-        return storage.toArray(new Resume[size()]);
+        return list.toArray(new Resume[list.size()]);
     }
 
     @Override
     public int size() {
-        return storage.size();
+        return list.size();
     }
 }

@@ -1,5 +1,6 @@
 package org.zcorp.java1.storage;
 
+import org.zcorp.java1.exception.StorageException;
 import org.zcorp.java1.model.Resume;
 
 import java.util.Arrays;
@@ -24,6 +25,11 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size = 0;
     }
 
+    @Override
+    protected void doUpdate(Resume r, Object index) {
+        storage[(Integer) index] = r;
+    }
+
     /**
      * @return array, contains only Resumes in storage (without null)
      */
@@ -33,40 +39,36 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void setElement(Resume r, Integer index) {
-        storage[index] = r;
+    protected void doSave(Resume r, Object index) {
+        if (size == STORAGE_LIMIT) {
+            throw new StorageException("Storage overflow", r.getUuid());
+        } else {
+            insertElement(r, (Integer) index);
+            size++;
+        }
     }
 
     @Override
-    protected boolean isStorageFull() {
-        return size == STORAGE_LIMIT;
-    }
-
-    @Override
-    protected void insertElement(Resume r, Integer index) {
-        insertElementByIndex(r, index);
-        size++;
-    }
-
-    protected abstract void insertElementByIndex(Resume r, int index);
-
-    @Override
-    protected void deleteElement(Resume.Entry re) {
-        fillDeletedElement(re.getIndex());
+    public void doDelete(Object index) {
+        fillDeletedElement((Integer) index);
         storage[size - 1] = null;
         size--;
     }
 
-    protected abstract void fillDeletedElement(int index);
-
     @Override
-    protected Resume.Entry getResumeEntry(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            return new Resume.Entry(index, null);
-        }
-        return new Resume.Entry(index, storage[index]);
+    public Resume doGet(Object index) {
+        return storage[(Integer) index];
     }
 
-    protected abstract int getIndex(String uuid);
+    @Override
+    protected boolean isExist(Object index) {
+        return (Integer) index >= 0;
+    }
+
+    protected abstract void fillDeletedElement(int index);
+
+    protected abstract void insertElement(Resume r, int index);
+
+    @Override
+    protected abstract Integer getSearchKey(String uuid);
 }
