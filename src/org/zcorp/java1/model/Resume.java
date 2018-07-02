@@ -5,7 +5,7 @@ import java.util.UUID;
 /**
  * org.zcorp.java1.model.Resume class
  */
-public class Resume implements Comparable<Resume> {
+public class Resume {
 
     // Unique identifier
     private final String uuid;
@@ -40,29 +40,6 @@ public class Resume implements Comparable<Resume> {
     @Override
     public String toString() {
         return uuid;
-    }
-
-    @Override
-    public int compareTo(Resume o) {
-        return uuid.compareTo(o.uuid);
-    }
-
-    public static class Entry {
-        private Integer index;
-        private Resume resume;
-
-        public Entry(Integer index, Resume resume) {
-            this.index = index;
-            this.resume = resume;
-        }
-
-        public Integer getIndex() {
-            return index;
-        }
-
-        public Resume getResume() {
-            return resume;
-        }
     }
 
 }
