@@ -7,6 +7,7 @@ import org.zcorp.java1.exception.ExistStorageException;
 import org.zcorp.java1.exception.NotExistStorageException;
 import org.zcorp.java1.model.Resume;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -71,9 +72,7 @@ public abstract class AbstractStorageTest {
     public void getAllSorted() throws Exception {
         List<Resume> list = storage.getAllSorted();
         assertEquals(3, list.size());
-        assertEquals(RESUME_1, list.get(0));
-        assertEquals(RESUME_2, list.get(1));
-        assertEquals(RESUME_3, list.get(2));
+        assertEquals(Arrays.asList(RESUME_1, RESUME_2, RESUME_3), list);
     }
 
     @Test

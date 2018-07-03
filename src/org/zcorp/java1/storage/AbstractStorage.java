@@ -4,7 +4,8 @@ import org.zcorp.java1.exception.ExistStorageException;
 import org.zcorp.java1.exception.NotExistStorageException;
 import org.zcorp.java1.model.Resume;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class AbstractStorage implements Storage {
 
@@ -19,6 +20,8 @@ public abstract class AbstractStorage implements Storage {
     protected abstract Resume doGet(Object searchKey);
 
     protected abstract void doDelete(Object searchKey);
+
+    protected abstract List<Resume> doCopyAll();
 
     @Override
     public void update(Resume r) {
@@ -60,15 +63,11 @@ public abstract class AbstractStorage implements Storage {
         return searchKey;
     }
 
-    protected static List<Resume> sortResumes(Collection<Resume> collection) {
-        List<Resume> sorted = new ArrayList<>(collection);
-        Collections.sort(sorted);
-        return sorted;
-    }
-
-    protected static List<Resume> sortResumes(Resume[] array, int from, int to) {
-        List<Resume> list = Arrays.asList(Arrays.copyOfRange(array, from, to));
-        return sortResumes(list);
+    @Override
+    public List<Resume> getAllSorted() {
+        List<Resume> list = doCopyAll();
+        Collections.sort(list);
+        return list;
     }
 
 }

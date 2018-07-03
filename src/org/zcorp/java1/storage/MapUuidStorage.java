@@ -2,6 +2,7 @@ package org.zcorp.java1.storage;
 
 import org.zcorp.java1.model.Resume;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,28 +17,28 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doUpdate(Resume r, Object searchKey) {
-        map.put((String) searchKey, r);
+    protected void doUpdate(Resume r, Object uuid) {
+        map.put((String) uuid, r);
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        return map.containsKey(searchKey);
+    protected boolean isExist(Object uuid) {
+        return map.containsKey(uuid);
     }
 
     @Override
-    protected void doSave(Resume r, Object searchKey) {
-        map.put((String) searchKey, r);
+    protected void doSave(Resume r, Object uuid) {
+        map.put((String) uuid, r);
     }
 
     @Override
-    protected Resume doGet(Object searchKey) {
-        return map.get(searchKey);
+    protected Resume doGet(Object uuid) {
+        return map.get(uuid);
     }
 
     @Override
-    protected void doDelete(Object searchKey) {
-        map.remove(searchKey);
+    protected void doDelete(Object uuid) {
+        map.remove(uuid);
     }
 
     @Override
@@ -46,8 +47,8 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        return sortResumes(map.values());
+    public List<Resume> doCopyAll() {
+        return new ArrayList<>(map.values());
     }
 
     @Override

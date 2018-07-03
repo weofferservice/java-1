@@ -10,7 +10,7 @@ import java.util.List;
  * Array based storage for Resumes
  */
 public abstract class AbstractArrayStorage extends AbstractStorage {
-    public static final int STORAGE_LIMIT = 10000;
+    static final int STORAGE_LIMIT = 10000;
 
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
@@ -31,12 +31,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         storage[(Integer) index] = r;
     }
 
-    /**
-     * @return list, contains only Resumes in storage (without null)
-     */
     @Override
-    public List<Resume> getAllSorted() {
-        return sortResumes(storage, 0, size);
+    public List<Resume> doCopyAll() {
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
     }
 
     @Override
