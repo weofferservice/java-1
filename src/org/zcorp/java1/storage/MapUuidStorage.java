@@ -3,6 +3,7 @@ package org.zcorp.java1.storage;
 import org.zcorp.java1.model.Resume;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // TODO create new MapStorage with search key not uuid
@@ -45,8 +46,8 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return map.values().toArray(new Resume[map.size()]);
+    public List<Resume> getAllSorted() {
+        return sortResumes(map.values());
     }
 
     @Override

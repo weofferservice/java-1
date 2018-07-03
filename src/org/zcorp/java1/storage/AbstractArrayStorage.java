@@ -4,6 +4,7 @@ import org.zcorp.java1.exception.StorageException;
 import org.zcorp.java1.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Array based storage for Resumes
@@ -31,11 +32,11 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     /**
-     * @return array, contains only Resumes in storage (without null)
+     * @return list, contains only Resumes in storage (without null)
      */
     @Override
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
+    public List<Resume> getAllSorted() {
+        return sortResumes(storage, 0, size);
     }
 
     @Override
