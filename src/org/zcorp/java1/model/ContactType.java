@@ -1,27 +1,23 @@
 package org.zcorp.java1.model;
 
 public enum ContactType {
-    PHONE("Тел.:", null),
-    SKYPE("Skype:", "../img/skype.png"),
-    EMAIL("Почта:", "../img/email.png"),
-    LINKEDIN(null, "../img/lin.png"),
-    GITHUB(null, "../img/gh.png"),
-    STACKOVERFLOW(null, "../img/so.png"),
-    SITE(null, null);
+    PHONE("Тел."),
+    MOBILE("Мобильный"),
+    HOME_PHONE("Домашний тел."),
+    SKYPE("Skype"),
+    MAIL("Почта"),
+    LINKEDIN("Профиль LinkedIn"),
+    GITHUB("Профиль GitHub"),
+    STACKOVERFLOW("Профиль Stackoverflow"),
+    HOME_PAGE("Домашняя страница");
 
-    private String preText;
-    private String iconUrl;
+    private final String title;
 
-    ContactType(String preText, String iconUrl) {
-        this.preText = preText;
-        this.iconUrl = iconUrl;
+    ContactType(String title) {
+        this.title = title;
     }
 
-    public String getPreText() {
-        return preText;
-    }
-
-    public String getIconUrl() {
-        return iconUrl;
+    public String getTitle() {
+        return title;
     }
 }

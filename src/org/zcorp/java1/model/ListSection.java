@@ -1,51 +1,38 @@
 package org.zcorp.java1.model;
 
-import java.util.Objects;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Objects;
 
 public class ListSection extends Section {
-    private List<String> list;
+    private final List<String> items;
 
-    public ListSection(SectionType type, String... lines) {
-        super(type);
-        Objects.requireNonNull(lines, "'lines' must not be null");
-        this.list = new ArrayList<>(Arrays.asList(lines));
+    public ListSection(List<String> items) {
+        Objects.requireNonNull(items, "items must not be null");
+        this.items = items;
     }
 
-    public List<String> getList() {
-        return list;
-    }
-
-    public void add(String line) {
-        list.add(line);
-    }
-
-    public void remove(String line) {
-        list.remove(line);
-    }
-
-    public void remove(int index) {
-        list.remove(index);
-    }
-
-    public void set(int index, String line) {
-        list.set(index, line);
+    public List<String> getItems() {
+        return items;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(type.getTitle());
-        sb.append(System.lineSeparator());
-        int i = 1;
-        for (String string : list) {
-            sb.append(i++);
-            sb.append(") ");
-            sb.append(string);
-            sb.append(System.lineSeparator());
-        }
-        return sb.toString();
+        return items.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ListSection that = (ListSection) o;
+
+        return items.equals(that.items);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return items.hashCode();
     }
 }
