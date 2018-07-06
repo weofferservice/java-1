@@ -29,5 +29,33 @@ public class MainFile {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        System.out.println("------------------------");
+        System.out.println("- Домашнее задание 8.2 -");
+        System.out.println("------------------------");
+        try {
+            recursiveDirTreePrinting(new File("."));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void recursiveDirTreePrinting(File rootDir) throws IOException {
+        if (rootDir.isDirectory()) {
+            File[] files = rootDir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (!file.isDirectory()) {
+                        doFile(file);
+                    } else {
+                        recursiveDirTreePrinting(file);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void doFile(File file) throws IOException {
+        System.out.println(file.getCanonicalPath());
     }
 }
