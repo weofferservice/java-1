@@ -29,6 +29,14 @@ public class Resume implements Comparable<Resume> {
         this.fullName = fullName;
     }
 
+    public String putContact(ContactType type, String contact) {
+        return contacts.put(type, contact);
+    }
+
+    public Section putSection(SectionType type, Section section) {
+        return sections.put(type, section);
+    }
+
     public String getUuid() {
         return uuid;
     }
