@@ -1,4 +1,4 @@
-package org.zcorp.java1.storage;
+package org.zcorp.java1;
 
 public class MainUtil {
     public static void main(String[] args) {
