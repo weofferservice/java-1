@@ -34,7 +34,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
             throw new StorageException("Path delete error", null);
         }
     }
-
+/*
     @Override
     public int size() {
         String[] list = directory.list();
@@ -101,4 +101,5 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         }
         return list;
     }
+*/
 }
