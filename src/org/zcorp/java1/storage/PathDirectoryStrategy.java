@@ -11,14 +11,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> {
+public class PathDirectoryStrategy implements DirectoryStrategy<Path> {
     private Path directory;
 
-    protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
-
-    protected abstract Resume doRead(InputStream is) throws IOException;
-
-    protected AbstractPathStorage(String dir) {
+    public PathDirectoryStrategy(String dir) {
         Objects.requireNonNull(dir, "dir must not be null");
         directory = Paths.get(dir);
         if (!Files.isDirectory(directory) ||
@@ -47,45 +43,45 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     }
 
     @Override
-    protected Path getSearchKey(String uuid) {
+    public Path getSearchKey(String uuid) {
         return Paths.get(directory.toString(), uuid);
     }
 
     @Override
-    protected void doUpdate(Resume r, Path path) {
+    public void doUpdate(Resume r, Path path, ResumeWriter writer) {
         try {
-            doWrite(r, new BufferedOutputStream(Files.newOutputStream(path)));
+            writer.doWrite(r, new BufferedOutputStream(Files.newOutputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Path write error", r.getUuid(), e);
         }
     }
 
     @Override
-    protected boolean isExist(Path path) {
+    public boolean isExist(Path path) {
         return Files.exists(path);
     }
 
     @Override
-    protected void doSave(Resume r, Path path) {
+    public void doSave(Resume r, Path path, ResumeWriter writer) {
         try {
             Files.createFile(path);
         } catch (IOException e) {
             throw new StorageException("Couldn't create path " + path.toAbsolutePath().toString(), r.getUuid(), e);
         }
-        doUpdate(r, path);
+        doUpdate(r, path, writer);
     }
 
     @Override
-    protected Resume doGet(Path path) {
+    public Resume doGet(Path path, ResumeReader reader) {
         try {
-            return doRead(new BufferedInputStream(Files.newInputStream(path)));
+            return reader.doRead(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Path read error", path.getFileName().toString(), e);
         }
     }
 
     @Override
-    protected void doDelete(Path path) {
+    public void doDelete(Path path) {
         try {
             Files.delete(path);
         } catch (IOException e) {
@@ -94,9 +90,9 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     }
 
     @Override
-    protected List<Resume> doCopyAll() {
+    public List<Resume> doCopyAll(ResumeReader reader) {
         try {
-            return Files.list(directory).map(this::doGet).collect(Collectors.toList());
+            return Files.list(directory).map(path -> doGet(path, reader)).collect(Collectors.toList());
         } catch (IOException e) {
             throw new StorageException("Directory read error", null);
         }

@@ -5,20 +5,20 @@ import org.zcorp.java1.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamStorage extends AbstractFileStorage {
-    public ObjectStreamStorage(String dir) {
-        super(dir);
+public class ObjectStreamStorage<T> extends AbstractDirectoryStorage<T> {
+    public ObjectStreamStorage(DirectoryStrategy<T> strategy) {
+        super(strategy);
     }
 
     @Override
-    protected void doWrite(Resume r, OutputStream os) throws IOException {
+    public void doWrite(Resume r, OutputStream os) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(os)) {
             oos.writeObject(r);
         }
     }
 
     @Override
-    protected Resume doRead(InputStream is) throws IOException {
+    public Resume doRead(InputStream is) throws IOException {
         try (ObjectInputStream ois = new ObjectInputStream(is)) {
             return (Resume) ois.readObject();
         } catch (ClassNotFoundException e) {

@@ -8,14 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public class FileDirectoryStrategy implements DirectoryStrategy<File> {
     private File directory;
 
-    protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
-
-    protected abstract Resume doRead(InputStream is) throws IOException;
-
-    protected AbstractFileStorage(String dir) {
+    public FileDirectoryStrategy(String dir) {
         Objects.requireNonNull(dir, "dir must not be null");
         directory = new File(dir);
         if (!directory.isDirectory()) {
@@ -46,59 +42,59 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected File getSearchKey(String uuid) {
+    public File getSearchKey(String uuid) {
         return new File(directory, uuid);
     }
 
     @Override
-    protected void doUpdate(Resume r, File file) {
+    public void doUpdate(Resume r, File file, ResumeWriter writer) {
         try {
-            doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
+            writer.doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
             throw new StorageException("File write error", r.getUuid(), e);
         }
     }
 
     @Override
-    protected boolean isExist(File file) {
+    public boolean isExist(File file) {
         return file.exists();
     }
 
     @Override
-    protected void doSave(Resume r, File file) {
+    public void doSave(Resume r, File file, ResumeWriter writer) {
         try {
             file.createNewFile();
         } catch (IOException e) {
             throw new StorageException("Couldn't create file " + file.getAbsolutePath(), file.getName(), e);
         }
-        doUpdate(r, file);
+        doUpdate(r, file, writer);
     }
 
     @Override
-    protected Resume doGet(File file) {
+    public Resume doGet(File file, ResumeReader reader) {
         try {
-            return doRead(new BufferedInputStream(new FileInputStream(file)));
+            return reader.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("File read error", file.getName(), e);
         }
     }
 
     @Override
-    protected void doDelete(File file) {
+    public void doDelete(File file) {
         if (!file.delete()) {
             throw new StorageException("File delete error", file.getName());
         }
     }
 
     @Override
-    protected List<Resume> doCopyAll() {
+    public List<Resume> doCopyAll(ResumeReader reader) {
         File[] files = directory.listFiles();
         if (files == null) {
             throw new StorageException("Directory read error", null);
         }
         List<Resume> list = new ArrayList<>(files.length);
         for (File file : files) {
-            list.add(doGet(file));
+            list.add(doGet(file, reader));
         }
         return list;
     }
