@@ -30,32 +30,21 @@ public class MainFile {
             throw new RuntimeException(e);
         }
 
-        printDirectoryDeeply(new File("."), -1);
+        printDirectoryDeeply(dir, "");
     }
 
-    public static void printDirectoryDeeply(File dir, int indent) {
+    public static void printDirectoryDeeply(File dir, String offset) {
         File[] files = dir.listFiles();
 
         if (files != null) {
-            indent++;
-            String indentStr = repeatChar('-', indent);
             for (File file : files) {
-                System.out.print(indentStr);
                 if (file.isFile()) {
-                    System.out.println("File: " + file.getName());
+                    System.out.println(offset + "F: " + file.getName());
                 } else if (file.isDirectory()) {
-                    System.out.println("Directory: " + file.getName());
-                    printDirectoryDeeply(file, indent);
+                    System.out.println(offset + "D: " + file.getName());
+                    printDirectoryDeeply(file, offset + "  ");
                 }
             }
         }
-    }
-
-    private static String repeatChar(char c, int count) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < count; i++) {
-            sb.append(c);
-        }
-        return sb.toString();
     }
 }
