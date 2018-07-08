@@ -1,15 +1,11 @@
-package org.zcorp.java1.storage;
+package org.zcorp.java1.storage.serializer;
 
 import org.zcorp.java1.exception.StorageException;
 import org.zcorp.java1.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamStorage<T> extends AbstractDirectoryStorage<T> {
-    public ObjectStreamStorage(DirectoryStrategy<T> strategy) {
-        super(strategy);
-    }
-
+public class ObjectStreamSerializer implements StreamSerializer {
     @Override
     public void doWrite(Resume r, OutputStream os) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(os)) {
