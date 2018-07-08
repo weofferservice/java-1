@@ -7,7 +7,6 @@ import org.zcorp.java1.exception.ExistStorageException;
 import org.zcorp.java1.exception.NotExistStorageException;
 import org.zcorp.java1.model.*;
 
-import java.io.File;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File(".\\storage");
+    protected static final String STORAGE_DIR = ".\\storage";
 
     protected Storage storage;
 

@@ -5,8 +5,8 @@ import org.zcorp.java1.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamStorage extends AbstractFileStorage {
-    public ObjectStreamStorage(String dir) {
+public class ObjectStreamPathStorage extends AbstractPathStorage {
+    public ObjectStreamPathStorage(String dir) {
         super(dir);
     }
 
