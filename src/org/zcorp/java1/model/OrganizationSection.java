@@ -9,7 +9,8 @@ public class OrganizationSection extends Section {
 
     private List<Organization> organizations;
 
-    public OrganizationSection() {}
+    private OrganizationSection() {
+    }
 
     public OrganizationSection(Organization... organizations) {
         this(Arrays.asList(organizations));

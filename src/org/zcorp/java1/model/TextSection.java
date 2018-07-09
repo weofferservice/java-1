@@ -7,7 +7,7 @@ public class TextSection extends Section {
 
     private String content;
 
-    public TextSection() {
+    private TextSection() {
     }
 
     public TextSection(String content) {

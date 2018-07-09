@@ -12,7 +12,7 @@ public class Link implements Serializable {
     private String name;
     private String url;
 
-    public Link() {
+    private Link() {
     }
 
     public Link(String name, String url) {

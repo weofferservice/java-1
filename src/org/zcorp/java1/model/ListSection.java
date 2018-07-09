@@ -9,7 +9,7 @@ public class ListSection extends Section {
 
     private List<String> items;
 
-    public ListSection() {
+    private ListSection() {
     }
 
     public ListSection(String... items) {

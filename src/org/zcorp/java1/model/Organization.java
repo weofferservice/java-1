@@ -23,7 +23,7 @@ public class Organization implements Serializable {
     private Link homePage;
     private List<Position> positions = new ArrayList<>();
 
-    public Organization() {
+    private Organization() {
     }
 
     public Organization(String name, String url, Position... positions) {
@@ -65,7 +65,7 @@ public class Organization implements Serializable {
         private String title;
         private String description;
 
-        public Position() {
+        private Position() {
         }
 
         public Position(int startYear, Month startMonth, String title, String description) {
