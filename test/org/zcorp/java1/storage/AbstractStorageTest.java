@@ -3,6 +3,7 @@ package org.zcorp.java1.storage;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.zcorp.java1.Config;
 import org.zcorp.java1.exception.ExistStorageException;
 import org.zcorp.java1.exception.NotExistStorageException;
 import org.zcorp.java1.model.*;
@@ -16,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File(".\\storage");
+    protected static final File STORAGE_DIR = Config.get().getStorageDir();
 
     protected Storage storage;
 
