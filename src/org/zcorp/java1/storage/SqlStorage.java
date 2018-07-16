@@ -13,6 +13,8 @@ import java.util.Map;
 
 import java.util.logging.Logger;
 
+// TODO implement Section (except OrganizationSection)
+// TODO Join and split ListSection by `\n`
 public class SqlStorage implements Storage {
     private static final Logger LOG = Logger.getLogger(SqlStorage.class.getName());
 
