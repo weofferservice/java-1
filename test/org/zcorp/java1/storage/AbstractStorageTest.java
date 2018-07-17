@@ -6,8 +6,7 @@ import org.junit.Test;
 import org.zcorp.java1.Config;
 import org.zcorp.java1.exception.ExistStorageException;
 import org.zcorp.java1.exception.NotExistStorageException;
-import org.zcorp.java1.model.ContactType;
-import org.zcorp.java1.model.Resume;
+import org.zcorp.java1.model.*;
 
 import java.io.File;
 import java.util.Arrays;
@@ -44,11 +43,12 @@ public abstract class AbstractStorageTest {
 
         R4.addContact(ContactType.PHONE, "44444");
         R4.addContact(ContactType.SKYPE, "Skype");
-/*
+
         R1.addSection(SectionType.OBJECTIVE, new TextSection("Objective1"));
         R1.addSection(SectionType.PERSONAL, new TextSection("Personal data"));
         R1.addSection(SectionType.ACHIEVEMENT, new ListSection("Achivment11", "Achivment12", "Achivment13"));
         R1.addSection(SectionType.QUALIFICATIONS, new ListSection("Java", "SQL", "JavaScript"));
+/*
         R1.addSection(SectionType.EXPERIENCE,
                 new OrganizationSection(
                         new Organization("Organization11", "http://Organization11.ru",
@@ -98,6 +98,8 @@ public abstract class AbstractStorageTest {
         newResume.addContact(ContactType.MAIL, "mail1@google.com");
         newResume.addContact(ContactType.SKYPE, "NewSkype");
         newResume.addContact(ContactType.MOBILE, "+7 921 222-22-22");
+        newResume.addSection(SectionType.PERSONAL, new TextSection("New Personal data"));
+        newResume.addSection(SectionType.ACHIEVEMENT, new ListSection("New Achivment11", "New Achivment12", "New Achivment13"));
         storage.update(newResume);
         assertTrue(newResume.equals(storage.get(UUID_1)));
     }
