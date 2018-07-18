@@ -3,17 +3,23 @@ package org.zcorp.java1.web;
 import org.zcorp.java1.Config;
 import org.zcorp.java1.model.*;
 import org.zcorp.java1.storage.Storage;
+import org.zcorp.java1.util.DateUtil;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class ResumeServlet extends HttpServlet {
+    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("MM/yyyy");
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
@@ -70,15 +76,12 @@ public class ResumeServlet extends HttpServlet {
             for (int i = 0; i < rowsCount; i++) {
                 writer.println("<tr>");
                 if (i == 0) {
-                    writer.println("<td>");
+                    writer.println("<td rowspan=\"" + rowsCount + "\">");
                     writer.println(resume.getUuid());
                     writer.println("</td>");
-                    writer.println("<td>");
+                    writer.println("<td rowspan=\"" + rowsCount + "\">");
                     writer.println(resume.getFullName());
                     writer.println("</td>");
-                } else {
-                    writer.println("<td></td>");
-                    writer.println("<td></td>");
                 }
                 if (i < contactsRowsCount) {
                     Map.Entry<ContactType, String> contact = contactsIter.next();
@@ -157,7 +160,35 @@ public class ResumeServlet extends HttpServlet {
                     break;
                 case EXPERIENCE:
                 case EDUCATION:
-                    // without OrganizationSections
+                    OrganizationSection orgSection = (OrganizationSection) entry.getValue();
+                    writer.println("<ol>");
+                    for (Organization org : orgSection.getOrganizations()) {
+                        writer.println("<li>");
+                        String url = org.getHomePage().getUrl();
+                        String name = org.getHomePage().getName();
+                        writer.println("<h3><a" + (!url.equals("") ? " href=\"" + url + "\">" : ">") + name + "</a></h3>");
+                        writer.println("<ul>");
+                        for (Organization.Position position : org.getPositions()) {
+                            writer.println("<li>");
+                            writer.print(DTF.format(position.getStartDate()));
+                            writer.print(" - ");
+                            LocalDate endDate = position.getEndDate();
+                            if (endDate.equals(DateUtil.NOW)) {
+                                writer.println("Сейчас");
+                            } else {
+                                writer.println(DTF.format(endDate));
+                            }
+                            writer.println("<h4>" + position.getTitle() + "</h4>");
+                            String description = position.getDescription();
+                            if (!description.equals("")) {
+                                writer.println(description);
+                            }
+                            writer.println("</li>");
+                        }
+                        writer.println("</ul>");
+                        writer.println("</li>");
+                    }
+                    writer.println("</ol>");
                     break;
             }
         }
