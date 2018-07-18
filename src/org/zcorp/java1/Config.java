@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class Config {
-    private static final File PROPS = new File("config/resumes.properties");
+    private static final File PROPS = new File(Config.class.getResource("/resumes.properties").getFile());
     private static final Config INSTANCE = new Config();
 
     private final File storageDir;
