@@ -23,9 +23,9 @@ public class SqlStorage implements Storage {
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
         try {
-            // Регистрация драйвера нужна только в Tomcat, тесты работают и без этого
-            DriverManager.registerDriver(new org.postgresql.Driver());
-        } catch (SQLException e) {
+            // Ручная загрузка класса драйвера БД нужна только в Tomcat, тесты работают и без этого
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }
         sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
