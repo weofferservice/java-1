@@ -1,4 +1,4 @@
-<%@ page import="org.zcorp.java1.model.ContactType" %>
+<%@ page import="org.zcorp.java1.util.HtmlUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -22,12 +22,13 @@
             <jsp:useBean id="resume" type="org.zcorp.java1.model.Resume"/>
             <tr>
                 <td><a href="resume?uuid=${resume.uuid}&action=view">${resume.fullName}</a></td>
-                <td><%=ContactType.MAIL.toHtml(resume.getContact(ContactType.MAIL))%></td>
+                <td>${HtmlUtil.toEmailLink(resume)}</td>
                 <td><a href="resume?uuid=${resume.uuid}&action=delete"><img src="img/delete.png"></a></td>
                 <td><a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/pencil.png"></a></td>
             </tr>
         </c:forEach>
     </table>
+    <a href="resume?action=add"><img src="img/add.png" style="display: block; margin: auto;"></a>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
