@@ -1,5 +1,7 @@
 package org.zcorp.java1.model;
 
+import org.zcorp.java1.util.HtmlUtil;
+
 public enum ContactType {
     PHONE("Тел."),
     MOBILE("Мобильный"),
@@ -7,13 +9,13 @@ public enum ContactType {
     SKYPE("Skype") {
         @Override
         protected String toHtml0(String value) {
-            return getTitle() + ": " + toLink("skype:" + value, value);
+            return getTitle() + ": " + HtmlUtil.toLink("skype:" + value, value);
         }
     },
     MAIL("Почта") {
         @Override
         protected String toHtml0(String value) {
-            return getTitle() + ": " + toLink("mailto:" + value, value);
+            return getTitle() + ": " + HtmlUtil.toLink("mailto:" + value, value);
         }
     },
     LINKEDIN("Профиль LinkedIn") {
@@ -60,10 +62,6 @@ public enum ContactType {
     }
 
     protected String toLink(String href) {
-        return toLink(href, title);
-    }
-
-    protected static String toLink(String href, String title) {
-        return "<a href='" + href + "'>" + title + "</a>";
+        return HtmlUtil.toLink(href, title);
     }
 }
