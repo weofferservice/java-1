@@ -1,6 +1,7 @@
 package org.zcorp.java1.model;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,7 +14,7 @@ public class OrganizationSection extends Section {
     }
 
     public OrganizationSection(Organization... organizations) {
-        this(Arrays.asList(organizations));
+        this(new LinkedList<>(Arrays.asList(organizations)));
     }
 
     public OrganizationSection(List<Organization> organizations) {
@@ -23,6 +24,14 @@ public class OrganizationSection extends Section {
 
     public List<Organization> getOrganizations() {
         return organizations;
+    }
+
+    public boolean addOrganization(Organization org) {
+        return organizations.add(org);
+    }
+
+    public boolean isEmpty() {
+        return organizations.isEmpty();
     }
 
     @Override

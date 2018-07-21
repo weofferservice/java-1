@@ -8,10 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static org.zcorp.java1.util.DateUtil.NOW;
 import static org.zcorp.java1.util.DateUtil.of;
@@ -27,7 +24,7 @@ public class Organization implements Serializable {
     }
 
     public Organization(String name, String url, Position... positions) {
-        this(new Link(name, url), Arrays.asList(positions));
+        this(new Link(name, url), new LinkedList<>(Arrays.asList(positions)));
     }
 
     public Organization(Link homePage, List<Position> positions) {
@@ -41,6 +38,10 @@ public class Organization implements Serializable {
 
     public List<Position> getPositions() {
         return positions;
+    }
+
+    public boolean addPosition(Organization.Position position) {
+        return positions.add(position);
     }
 
     @Override
