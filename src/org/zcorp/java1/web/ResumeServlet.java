@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,154 +31,67 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         String uuid = request.getParameter("uuid");
-        if (uuid == null) {
-            response.sendRedirect("resume");
-            return;
-        }
-
+        Resume r = storage.get(uuid);
         String fullName = request.getParameter("fullName");
-        fullName = fullName.trim();
-        if (fullName.length() == 0) {
-            if (uuid.length() > 0) {
-                storage.delete(uuid);
-            }
-            response.sendRedirect("resume");
-            return;
-        }
-
-        Resume r;
-        if (uuid.length() == 0) {
-            r = new Resume(fullName);
-        } else {
-            r = storage.get(uuid);
-            r.setFullName(fullName);
-        }
-
+        r.setFullName(fullName.trim());
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
-            value = value.trim();
-            if (value.length() > 0) {
-                r.addContact(type, value);
-            } else {
+            if (HtmlUtil.isEmpty(value)) {
                 r.removeContact(type);
+            } else {
+                r.putContact(type, value.trim());
             }
         }
         for (SectionType type : SectionType.values()) {
-            switch (type) {
-                case PERSONAL:
-                case OBJECTIVE: {
-                    String value = request.getParameter(type.name());
-                    value = value.trim();
-                    if (value.length() > 0) {
-                        r.addSection(type, new TextSection(value));
-                    } else {
-                        r.removeSection(type);
-                    }
-                    break;
-                }
-                case ACHIEVEMENT:
-                case QUALIFICATIONS: {
-                    String[] values = request.getParameterValues(type.name());
-                    if (values == null) {
-                        r.removeSection(type);
+            String value = request.getParameter(type.name());
+            String[] values = request.getParameterValues(type.name());
+            if (HtmlUtil.isEmpty(value) && values.length < 2) {
+                r.removeSection(type);
+            } else {
+                switch (type) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        r.putSection(type, new TextSection(value.trim()));
                         break;
-                    }
-                    List<String> items = new ArrayList<>(values.length);
-                    for (String value : values) {
-                        value = value.trim();
-                        if (value.length() > 0) {
-                            items.add(value);
-                        }
-                    }
-                    if (!items.isEmpty()) {
-                        r.addSection(type, new ListSection(items));
-                    } else {
-                        r.removeSection(type);
-                    }
-                    break;
-                }
-                case EXPERIENCE:
-                case EDUCATION: {
-                    String[] names = request.getParameterValues(type.name() + "-name");
-                    if (names == null) {
-                        r.removeSection(type);
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        r.putSection(type, new ListSection(value.trim().split("\n")));
                         break;
-                    }
-
-                    String[] urls = request.getParameterValues(type.name() + "-url");
-
-                    String[] positionCounters = request.getParameterValues(type.name() + "-position-counter");
-                    List<Integer> positionShifts = new ArrayList<>(positionCounters.length + 1);
-                    int currentPositionShift = 0;
-                    positionShifts.add(currentPositionShift);
-                    for (String positionCounter : positionCounters) {
-                        currentPositionShift += Integer.parseInt(positionCounter);
-                        positionShifts.add(currentPositionShift);
-                    }
-
-                    String[] positionStartdates = request.getParameterValues(type.name() + "-position-startdate");
-                    String[] positionEnddates = request.getParameterValues(type.name() + "-position-enddate");
-                    String[] positionTitles = request.getParameterValues(type.name() + "-position-title");
-                    String[] positionDescriptions = request.getParameterValues(type.name() + "-position-description");
-
-                    OrganizationSection orgSection = new OrganizationSection();
-                    for (int i = 0; i < names.length; i++) { // начало цикла по организациям
-                        String name = names[i];
-                        name = name.trim();
-                        if (name.length() == 0) {
-                            continue;
+                    case EDUCATION:
+                    case EXPERIENCE:
+                        List<Organization> orgs = new ArrayList<>();
+                        String[] urls = request.getParameterValues(type.name() + "url");
+                        for (int i = 0; i < values.length; i++) {
+                            String name = values[i];
+                            if (!HtmlUtil.isEmpty(name)) {
+                                List<Organization.Position> positions = new ArrayList<>();
+                                String pfx = type.name() + i;
+                                String[] startDates = request.getParameterValues(pfx + "startDate");
+                                String[] endDates = request.getParameterValues(pfx + "endDate");
+                                String[] titles = request.getParameterValues(pfx + "title");
+                                String[] descriptions = request.getParameterValues(pfx + "description");
+                                for (int j = 0; j < titles.length; j++) {
+                                    if (!HtmlUtil.isEmpty(titles[j])) {
+                                        positions.add(new Organization.Position(
+                                                                DateUtil.parseFromEdit(startDates[j]),
+                                                                DateUtil.parseFromEdit(endDates[j]),
+                                                                titles[j].trim(),
+                                                                descriptions[j].trim()));
+                                    }
+                                }
+                                orgs.add(new Organization(new Link(name.trim(), urls[i].trim()), positions));
+                            }
                         }
-                        String url = urls[i];
-                        url = url.trim();
-
-                        Organization org = new Organization(name, url);
-                        orgSection.addOrganization(org);
-
-                        int positionCounter = Integer.parseInt(positionCounters[i]);
-                        int positionShift = positionShifts.get(i);
-                        for (int j = 0; j < positionCounter; j++) { // начало цикла по позициям в организации
-                            String positionTitle = positionTitles[positionShift + j];
-                            positionTitle = positionTitle.trim();
-                            if (positionTitle.length() == 0) {
-                                continue;
-                            }
-
-                            String positionStartdateStr = positionStartdates[positionShift + j];
-                            if (positionStartdateStr.length() == 0) {
-                                continue;
-                            }
-                            LocalDate positionStartdate = HtmlUtil.ofYearMonth(positionStartdateStr);
-
-                            String positionEnddateStr = positionEnddates[positionShift + j];
-                            LocalDate positionEnddate =
-                                    positionEnddateStr.length() == 0 ? DateUtil.NOW : HtmlUtil.ofYearMonth(positionEnddateStr);
-
-                            String positionDescription = positionDescriptions[positionShift + j];
-                            positionDescription = positionDescription.trim();
-
-                            Organization.Position position =
-                                    new Organization.Position(positionStartdate, positionEnddate, positionTitle, positionDescription);
-                            org.addPosition(position);
-                        } // конец цикла по позициям в организации
-                    } // конец цикла по организациям
-
-                    if (orgSection.isEmpty()) {
-                        r.removeSection(type);
-                    } else {
-                        r.addSection(type, orgSection);
-                    }
-                    break;
+                        if (orgs.isEmpty()) {
+                            r.removeSection(type);
+                        } else {
+                            r.putSection(type, new OrganizationSection(orgs));
+                        }
+                        break;
                 }
             }
         }
-
-        if (uuid.length() == 0) {
-            storage.save(r);
-            uuid = r.getUuid();
-        } else {
-            storage.update(r);
-        }
-
+        storage.update(r);
         response.sendRedirect("resume?uuid=" + uuid + "&action=view");
     }
 
@@ -199,11 +111,24 @@ public class ResumeServlet extends HttpServlet {
                 response.sendRedirect("resume");
                 return;
             case "view":
-            case "edit":
                 r = storage.get(uuid);
                 break;
-            case "add":
-                r = null;
+            case "edit":
+                r = storage.get(uuid);
+                for (SectionType type : new SectionType[] {SectionType.EXPERIENCE, SectionType.EDUCATION}) {
+                    List<Organization> emptyFirstOrganizations = new ArrayList<>();
+                    emptyFirstOrganizations.add(Organization.EMPTY);
+                    OrganizationSection section = (OrganizationSection) r.getSection(type);
+                    if (section != null) {
+                        for (Organization org : section.getOrganizations()) {
+                            List<Organization.Position> emptyFirstPositions = new ArrayList<>();
+                            emptyFirstPositions.add(Organization.Position.EMPTY);
+                            emptyFirstPositions.addAll(org.getPositions());
+                            emptyFirstOrganizations.add(new Organization(org.getHomePage(), emptyFirstPositions));
+                        }
+                    }
+                    r.putSection(type, new OrganizationSection(emptyFirstOrganizations));
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");

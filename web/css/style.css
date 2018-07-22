@@ -1,9 +1,9 @@
-section {
-    width: 900px;
-    margin: auto;
+body, pre {
+    font-family: "Times New Roman", serif;
 }
 
-table {
+section {
+    width: 900px;
     margin: auto;
 }
 
@@ -38,6 +38,7 @@ dt {
 dd {
     display: inline-block;
     margin-left: 8px;
+    margin-bottom: 8px;
     vertical-align: top;
 }
 
@@ -76,4 +77,8 @@ a[href*="github."] {
 
 img {
     cursor: pointer;
+}
+
+textarea {
+    resize: vertical;
 }
