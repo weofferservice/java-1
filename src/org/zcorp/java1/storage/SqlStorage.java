@@ -198,12 +198,12 @@ public class SqlStorage implements Storage {
     }
 
     private void addContact(ResultSet rs, Resume r) throws SQLException {
-        r.addContact(ContactType.valueOf(rs.getString("type")), rs.getString("value"));
+        r.putContact(ContactType.valueOf(rs.getString("type")), rs.getString("value"));
     }
 
     private void addSection(ResultSet rs, Resume r) throws SQLException {
         SectionType type = SectionType.valueOf(rs.getString("type"));
         String value = rs.getString("value");
-        r.addSection(type, JsonParser.read(value, Section.class));
+        r.putSection(type, JsonParser.read(value, Section.class));
     }
 }
